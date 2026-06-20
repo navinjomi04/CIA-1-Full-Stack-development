@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Traffic Bottleneck - clearwayBlr</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;700&family=Inter:wght=400;500;600;700&family=JetBrains+Mono:wght=500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body, input, select, button { font-family: 'Inter', sans-serif !important; }
+        h1, h2, h3, label { font-family: 'Space Grotesk', sans-serif !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 shadow-xs h-20 flex items-center">
+        <div class="max-w-7xl mx-auto w-full px-4 flex items-center justify-between">
+            <a href="index.html" class="text-xl font-bold tracking-tight text-slate-900"><i class="fas fa-arrow-left text-sm mr-2 text-slate-400"></i>clearway<span class="text-emerald-600">Blr</span></a>
+            <span class="text-xs font-mono font-bold bg-rose-50 text-rose-600 border border-rose-200 px-3 py-1 rounded-lg uppercase">Incident Telemetry Node</span>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-lg w-full mx-auto p-4 sm:p-6 my-6 flex flex-col justify-center">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-md space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900">Broadcast Bottleneck Vector</h2>
+                <p class="text-slate-500 text-xs font-medium mt-1">Crowdsource real-time traffic validation insights to adjust mapping baselines across the city geofence.</p>
+            </div>
+
+            <form id="incidentForm" novalidate class="space-y-4">
+                <div>
+                    <label for="locationName" class="block text-xs font-bold font-mono text-slate-500 uppercase mb-1">Target Corridor / Route Zone</label>
+                    <input type="text" id="locationName" placeholder="e.g., Sony World Junction Flyover approach" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors bg-slate-50 font-medium">
+                    <span id="locationError" class="text-rose-500 text-[11px] font-semibold mt-1 hidden"><i class="fas fa-circle-exclamation mr-1"></i>Please specify a location path descriptive string (min 5 characters).</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="latitudeCoord" class="block text-xs font-bold font-mono text-slate-500 uppercase mb-1">Target Lat Latitude</label>
+                        <input type="number" id="latitudeCoord" step="0.0001" placeholder="e.g., 12.9345" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 bg-slate-50 font-mono">
+                    </div>
+                    <div>
+                        <label for="longitudeCoord" class="block text-xs font-bold font-mono text-slate-500 uppercase mb-1">Target Lng Longitude</label>
+                        <input type="number" id="longitudeCoord" step="0.0001" placeholder="e.g., 77.6101" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 bg-slate-50 font-mono">
+                    </div>
+                </div>
+                <span id="coordsError" class="text-rose-500 text-[11px] font-semibold mt-1 hidden"><i class="fas fa-circle-exclamation mr-1"></i>Coordinates must fit within the Bengaluru limits (Lat: 12.7 to 13.2, Lng: 77.4 to 77.8).</span>
+
+                <div>
+                    <label for="incidentType" class="block text-xs font-bold font-mono text-slate-500 uppercase mb-1">Bottleneck Matrix Vector Class</label>
+                    <select id="incidentType" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:border-emerald-600 bg-slate-50 font-medium">
+                        <option value="">-- Select Constraint Profile --</option>
+                        <option value="gridlock">Construction Gridlock / Major Delay</option>
+                        <option value="slowdown">High Volume Corridor Dense Slowdown</option>
+                        <option value="waterlogging">Waterlogging Incident / Flash Flood</option>
+                    </select>
+                    <span id="typeError" class="text-rose-500 text-[11px] font-semibold mt-1 hidden"><i class="fas fa-circle-exclamation mr-1"></i>Please select an active bottleneck class profile.</span>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs py-3.5 rounded-xl uppercase tracking-wider transition-all shadow-md">
+                        Broadcast Telemetry Incident
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('incidentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Catch default browser submission events
+
+            let passesValidation = true;
+            const loc = document.getElementById('locationName');
+            const lat = document.getElementById('latitudeCoord');
+            const lng = document.getElementById('longitudeCoord');
+            const type = document.getElementById('incidentType');
+
+            // 1. Text length validation logic
+            if (loc.value.trim().length < 5) {
+                document.getElementById('locationError').classList.remove('hidden');
+                loc.classList.add('border-rose-500', 'bg-rose-50/30');
+                passesValidation = false;
+            } else {
+                document.getElementById('locationError').classList.add('hidden');
+                loc.classList.remove('border-rose-500', 'bg-rose-50/30');
+            }
+
+            // 2. Strict spatial bounds checking logic (Bengaluru Boundaries validation)
+            const latVal = parseFloat(lat.value);
+            const lngVal = parseFloat(lng.value);
+            if (isNaN(latVal) || isNaN(lngVal) || latVal < 12.7 || latVal > 13.2 || lngVal < 77.4 || lngVal > 77.8) {
+                document.getElementById('coordsError').classList.remove('hidden');
+                lat.classList.add('border-rose-500'); lng.classList.add('border-rose-500');
+                passesValidation = false;
+            } else {
+                document.getElementById('coordsError').classList.add('hidden');
+                lat.classList.remove('border-rose-500'); lng.classList.remove('border-rose-500');
+            }
+
+            // 3. Selection dropdown criteria evaluation
+            if (!type.value) {
+                document.getElementById('typeError').classList.remove('hidden');
+                type.classList.add('border-rose-500');
+                passesValidation = false;
+            } else {
+                document.getElementById('typeError').classList.add('hidden');
+                type.classList.remove('border-rose-500');
+            }
+
+            // Commit sequence on successful parsing
+            if (passesValidation) {
+                const globalIncidentPayload = {
+                    name: loc.value.trim(),
+                    lat: latVal,
+                    lng: lngVal,
+                    type: type.value,
+                    timestamp: Date.now()
+                };
+
+                // Push objects safely into the shared localStorage engine framework array
+                const localRegistry = JSON.parse(localStorage.getItem('blr_incidents')) || [];
+                localRegistry.push(globalIncidentPayload);
+                localStorage.setItem('blr_incidents', JSON.stringify(localRegistry));
+
+                alert("Telemetry record submitted into edge cache. Redirecting to baseline dashboard viewport...");
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

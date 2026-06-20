@@ -5,121 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClearWayBlr - Real-Time Crowdsourced Traffic Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=400;500;600;700;800&family=Inter:wght=400;500;600;700;800&family=JetBrains+Mono:wght=400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;700&family=Inter:wght=400;500;600;700&family=JetBrains+Mono:wght=500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* Strict Typography Theme Alignment from Lab 1 */
-        body, p, a, li, article, button, input {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
-        }
-        h1, h2, h3, h4, .font-display, .logo-text {
-            font-family: 'Space Grotesk', sans-serif !important;
-        }
-        .mono-font {
-            font-family: 'JetBrains Mono', monospace !important;
-        }
-        html {
-            scroll-behavior: smooth;
-        }
-        #live-map {
-            height: 100%;
-            width: 100%;
-            z-index: 10;
-        }
-        .leaflet-container {
-            background: #f8fafc;
-        }
-        .leaflet-bar {
-            border: none !important;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06) !important;
-        }
+        body, p, a, li, button, input { font-family: 'Inter', sans-serif !important; }
+        h1, h2, h3, h4, .logo-text { font-family: 'Space Grotesk', sans-serif !important; }
+        .mono-font { font-family: 'JetBrains Mono', monospace !important; }
+        #live-map { height: 100%; width: 100%; min-height: 380px; z-index: 10; }
     </style>
 </head>
 <body class="text-slate-800 antialiased relative min-h-screen flex flex-col bg-slate-50">
 
     <div class="fixed inset-0 w-full h-full z-0 pointer-events-none grid grid-cols-2 md:grid-cols-3 grid-rows-3 md:grid-rows-2 gap-1 p-1">
-        <img src="Images/download1.jpg" alt="Bengaluru Landmark 1" class="w-full h-full object-cover opacity-25 contrast-125 brightness-100">
-        <img src="Images/download2.jpg" alt="Bengaluru Landmark 2" class="w-full h-full object-cover opacity-25 contrast-125 brightness-100">
-        <img src="Images/download3.jpg" alt="Bengaluru Landmark 3" class="w-full h-full object-cover opacity-25 contrast-125 brightness-100">
-        <img src="Images/download4.jpg" alt="Bengaluru Landmark 4" class="w-full h-full object-cover opacity-25 contrast-125 brightness-100">
-        <img src="Images/download5.jpg" alt="Bengaluru Landmark 5" class="w-full h-full object-cover opacity-25 contrast-125 brightness-100">
-        <img src="Images/download6.jpg" alt="Bengaluru Landmark 6" class="w-full h-full object-cover opacity-25 contrast-125 brightness-100">
+        <img src="Images/download1.jpg" alt="Blr 1" class="w-full h-full object-cover opacity-20 contrast-125">
+        <img src="Images/download2.jpg" alt="Blr 2" class="w-full h-full object-cover opacity-20 contrast-125">
+        <img src="Images/download3.jpg" alt="Blr 3" class="w-full h-full object-cover opacity-20 contrast-125">
+        <img src="Images/download4.jpg" alt="Blr 4" class="w-full h-full object-cover opacity-20 contrast-125">
+        <img src="Images/download5.jpg" alt="Blr 5" class="w-full h-full object-cover opacity-20 contrast-125">
+        <img src="Images/download6.jpg" alt="Blr 6" class="w-full h-full object-cover opacity-20 contrast-125">
         <div class="absolute inset-0 bg-gradient-to-b from-white/70 via-slate-50/40 to-white/80"></div>
     </div>
 
     <header class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-24 flex items-center justify-between">
-            
             <div class="flex items-center space-x-5">
-                <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-sm bg-white p-1 flex items-center justify-center border border-slate-200 relative group">
-                    <img src="Images/logo.png" alt="ClearWayBlr Logo" class="w-full h-full object-contain z-10 relative" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-sm bg-white p-1 flex items-center justify-center border border-slate-200">
+                    <img src="Images/logo.png" alt="Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="absolute inset-0 hidden items-center justify-center bg-emerald-500/10 text-emerald-600">
                         <i class="fas fa-map-location-dot text-2xl"></i>
                     </div>
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 logo-text">
-                        clearway<span class="text-emerald-600">Blr</span>
-                    </span>
+                    <span class="text-3xl font-extrabold tracking-tight text-slate-900 logo-text">clearway<span class="text-emerald-600">Blr</span></span>
                     <span class="text-[10px] text-slate-500 font-semibold tracking-widest uppercase mt-0.5">Smart City Hub</span>
                 </div>
             </div>
 
-            <div class="flex items-center space-x-3 bg-slate-100 pl-3 pr-1.5 py-1.5 rounded-xl border border-slate-200 max-w-md shadow-inner z-20">
+            <div class="flex items-center space-x-3 bg-slate-100 pl-3 pr-1.5 py-1.5 rounded-xl border border-slate-200 shadow-inner z-20">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-user-circle text-slate-400 text-sm"></i>
-                    <span id="profile-identity-tag" class="text-xs font-semibold text-slate-700 truncate max-w-[120px]">
-                        Loading Profile...
-                    </span>
+                    <span id="profile-identity-tag" class="text-xs font-semibold text-slate-700 truncate max-w-[120px]">Loading Identity...</span>
                 </div>
                 <div class="flex items-center gap-1.5">
-                    <input type="text" id="username-input" placeholder="Set profile name..." class="bg-white border border-slate-300 rounded-lg text-[11px] px-2 py-1 focus:outline-none focus:border-emerald-600 text-slate-800 w-28 font-medium">
-                    <button onclick="saveUserExperience()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg tracking-wide transition-all shadow-sm">
-                        Save
-                    </button>
-                    <button onclick="clearUserExperience()" class="text-slate-400 hover:text-rose-500 text-[10px] p-1 transition-all" title="Reset Profile">
-                        <i class="fas fa-arrow-rotate-left"></i>
-                    </button>
+                    <input type="text" id="username-input" placeholder="Set profile name..." class="bg-white border border-slate-300 rounded-lg text-[11px] px-2 py-1 focus:outline-none focus:border-emerald-600 w-28 font-medium">
+                    <button onclick="saveProfile()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg shadow-sm transition-all">Save</button>
+                    <button onclick="clearProfile()" class="text-slate-400 hover:text-rose-500 text-[10px] p-1 transition-all"><i class="fas fa-arrow-rotate-left"></i></button>
                 </div>
             </div>
-
         </div>
     </header>
 
-    <nav class="bg-white border-b border-slate-200 shadow-xs sticky top-24 z-40">
+    <nav class="bg-white border-b border-slate-200 sticky top-24 z-40 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between text-xs font-semibold text-slate-600">
             <ul class="flex items-center space-x-6">
-                <li><a href="#hero" class="hover:text-emerald-600 transition-colors flex items-center gap-1.5"><i class="fas fa-house"></i> Home</a></li>
+                <li><a href="#" class="text-emerald-600 flex items-center gap-1.5"><i class="fas fa-house"></i> Home</a></li>
                 <li><a href="#live-dashboard" class="hover:text-emerald-600 transition-colors flex items-center gap-1.5"><i class="fas fa-chart-line"></i> Live Dashboard</a></li>
                 <li><a href="#facts-section" class="hover:text-emerald-600 transition-colors flex items-center gap-1.5"><i class="fas fa-square-poll-vertical"></i> Metrics</a></li>
-                <li><a href="#about-section" class="hover:text-emerald-600 transition-colors flex items-center gap-1.5"><i class="fas fa-circle-info"></i> City Mission</a></li>
             </ul>
-
-            <div class="flex items-center space-x-2">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 tracking-wide">
-                    Bengaluru Geofence Only (Internal Rides)
-                </span>
-            </div>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                Bengaluru Geofence Verified
+            </span>
         </div>
     </nav>
 
-    <section id="hero" class="relative pt-14 pb-6 overflow-hidden z-30">
+    <section id="hero" class="relative pt-12 pb-6 z-30">
         <div class="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <h1 class="text-4xl md:text-6xl font-black tracking-tight text-slate-900 leading-tight font-display">
-                Navigate Bengaluru<br><span class="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">On Your Own Terms.</span>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+                Navigate Bengaluru <br><span class="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">On Your Own Terms.</span>
             </h1>
-            <p class="text-slate-600 text-xs md:text-sm font-medium max-w-2xl mx-auto leading-relaxed">
-                A community-driven platform within the Bengaluru geofence where drivers and commuters log traffic issues that instantly appear as red markers on the live map, automatically optimizing your journey with alternative routes.
+            <p class="text-slate-600 text-xs md:text-sm font-medium max-w-xl mx-auto leading-relaxed">
+                A community-driven platform within the Bengaluru geofence where drivers and commuters log traffic metrics.
             </p>
-
-            <div class="max-w-md mx-auto bg-white/80 border border-slate-200 p-4 rounded-2xl backdrop-blur-md shadow-lg grid grid-cols-2 gap-4">
+            <div class="max-w-xs sm:max-w-md mx-auto bg-white/80 border border-slate-200 p-4 rounded-2xl backdrop-blur-md shadow-lg grid grid-cols-2 gap-4">
                 <a href="report.html" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 tracking-wide uppercase">
                     <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> Report Bottleneck
                 </a>
@@ -130,414 +92,203 @@
         </div>
     </section>
 
-    <div class="relative z-30 max-w-4xl w-full mx-auto px-4 flex justify-between items-center pointer-events-none gap-6 my-2">
-        <div class="w-44 h-24 md:h-28 rounded-2xl overflow-hidden border border-slate-200 shadow-md rotate-[-3deg] bg-white p-1">
-            <img src="Images/traffic-image1.jpg" alt="Traffic State 1" class="w-full h-full object-cover rounded-xl">
-        </div>
-        <div class="w-44 h-24 md:h-28 rounded-2xl overflow-hidden border border-slate-200 shadow-md rotate-[3deg] bg-white p-1">
-            <img src="Images/traffic-image2.jpg" alt="Traffic State 2" class="w-full h-full object-cover rounded-xl">
-        </div>
-    </div>
-
     <main id="live-dashboard" class="relative z-30 flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
             
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 text-slate-800">
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-satellite-dish text-emerald-600 text-base"></i>
-                        <h3 class="text-xs font-bold tracking-tight uppercase text-slate-500 font-mono">GPS Spatial Sensor Link</h3>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                        W3C Geolocation API
-                    </span>
+                    <h3 class="text-xs font-bold font-mono tracking-tight uppercase text-slate-500"><i class="fas fa-satellite-dish text-emerald-600 mr-1"></i> Spatial Sensor</h3>
+                    <span class="text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600 border border-slate-200">W3C Geolocation API</span>
                 </div>
-                
-                <p class="text-slate-500 text-xs leading-relaxed font-medium">
-                    Query browser state variables to acquire low-latency hardware spatial bounds and sync your current position node on the baseline viewport map.
-                </p>
-
-                <button onclick="getUserLocation()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 tracking-wide uppercase font-display">
-                    <i class="fas fa-crosshairs"></i> Capture Coordinates & Center Map
+                <p class="text-slate-500 text-xs font-medium">Capture hardware geolocation arrays to re-center viewport metrics directly onto your active commute path.</p>
+                <button onclick="getUserLocation()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-3 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 uppercase tracking-wide">
+                    <i class="fas fa-crosshairs"></i> Fetch Edge Coordinates
                 </button>
-                
-                <div id="geo-output" class="text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200 hidden font-mono text-slate-700"></div>
+                <div id="geo-output" class="text-xs bg-slate-50 p-3.5 rounded-xl border border-slate-200 hidden font-mono"></div>
             </div>
 
-            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex-1 flex flex-col justify-between min-h-[220px]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div class="flex items-center gap-2 text-amber-600">
-                        <i class="fas fa-closed-captioning text-base"></i>
-                        <h3 class="text-xs font-bold tracking-wider uppercase font-mono">Telemetry Subtitle Stream</h3>
-                    </div>
-                    <span class="text-[9px] font-mono text-slate-500 uppercase bg-slate-50 px-2 py-0.5 rounded border border-slate-200 tracking-wide">
-                        <i class="fas fa-circle text-blue-400 text-[6px] mr-1 animate-pulse"></i> Sync Active
-                    </span>
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex-1 flex flex-col justify-between min-h-[180px]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h3 class="text-xs font-bold font-mono text-amber-600 uppercase"><i class="fas fa-closed-captioning mr-1"></i> Telemetry Subtitle Stream</h3>
+                    <span class="text-[9px] font-mono text-slate-400 bg-slate-50 px-2 border rounded">System Loop Online</span>
                 </div>
-
-                <div id="subtitle-stream-box" class="my-4 flex-1 w-full bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-400 leading-relaxed transition-all duration-300 overflow-y-auto max-h-[140px] shadow-inner">
-                    <span class="text-slate-500 italic">[Ecosystem standby. Engage hardware coordinates processing to stream real-time accessibility data...]</span>
+                <div id="subtitle-stream-box" class="my-3 flex-1 w-full bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-slate-400 max-h-[120px] overflow-y-auto">
+                    <span class="text-slate-500 italic">[Standby Mode. Engage spatial tracking vector nodes to sync dynamic auditory logging metrics...]</span>
                 </div>
-
-                <p class="text-[10px] text-slate-400 leading-normal border-t border-slate-100 pt-3">
-                    Designed for high-noise deployment environments or total audio muting constraints during vehicle routing.
-                </p>
+                <p class="text-[10px] text-slate-400">High-noise execution design pattern compensating for audio streaming limits or muted system channels.</p>
             </div>
 
             <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2 text-slate-800">
-                        <i class="fas fa-video text-xs text-rose-500"></i>
-                        <h3 class="text-xs font-bold tracking-tight uppercase text-slate-500 font-mono">CCTV Node Stream</h3>
-                    </div>
-                    <span class="bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded tracking-wider shadow-xs animate-pulse">LIVE NODE</span>
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold font-mono text-slate-500 uppercase"><i class="fas fa-video text-rose-500 mr-1"></i> CCTV System Node</h3>
+                    <span class="bg-rose-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded animate-pulse">LIVE FEED</span>
                 </div>
-                <div class="w-full bg-slate-50 rounded-xl overflow-hidden border border-slate-200 p-0.5 shadow-inner">
-                    <video class="w-full h-36 object-cover rounded-lg" controls autoplay muted loop playsinline>
-                        <source src="Images/video_api.mp4" type="video/mp4">
-                        Your browser does not support HTML5 video content streams.
-                    </video>
-                </div>
+                <video class="w-full h-32 object-cover rounded-xl border border-slate-200" controls autoplay muted loop>
+                    <source src="Images/video_api.mp4" type="video/mp4">
+                    Media streaming engine unsupported by host window parameters.
+                </video>
             </div>
-
         </div>
 
-        <div class="lg:col-span-7 bg-white border border-slate-200 p-4 rounded-2xl shadow-sm flex flex-col justify-between min-h-[500px] lg:min-h-0">
-            
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
-                <div>
-                    <h3 class="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2 font-display">
-                        <i class="fas fa-globe text-slate-400"></i> Regional Baseline Telemetry Grid
-                    </h3>
-                </div>
-                
-                <div class="flex items-center gap-2.5 bg-slate-50 text-slate-800 px-3 py-1.5 rounded-xl border border-slate-200">
-                    <canvas id="radarCanvas" width="28" height="28" class="bg-white rounded-full border border-emerald-500/20"></canvas>
-                    <div class="leading-none">
-                        <p class="text-[9px] font-bold text-slate-400 uppercase font-mono tracking-wider">Density Scan</p>
-                        <p class="text-[10px] mono-font text-emerald-600 font-bold">Active Loop</p>
-                    </div>
+        <div class="lg:col-span-7 bg-white border border-slate-200 p-4 rounded-2xl shadow-sm flex flex-col min-h-[450px]">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                <h3 class="text-sm font-bold text-slate-900 tracking-tight"><i class="fas fa-globe text-slate-400 mr-1"></i> Regional Telemetry Mapping Matrix</h3>
+                <div class="flex items-center gap-2 bg-slate-50 px-2.5 py-1 rounded-xl border text-slate-800">
+                    <canvas id="radarCanvas" width="24" height="24" class="bg-white rounded-full border border-emerald-500/20"></canvas>
+                    <span class="text-[10px] font-mono font-bold text-emerald-600">Density Scan Loop</span>
                 </div>
             </div>
-
-            <div class="flex-1 relative w-full rounded-xl overflow-hidden border border-slate-200 min-h-[400px] lg:min-h-0 shadow-inner">
+            <div class="flex-1 relative w-full rounded-xl overflow-hidden border border-slate-200 min-h-[380px]">
                 <div id="live-map"></div>
             </div>
         </div>
-
     </main>
 
-    <div class="relative z-30 max-w-4xl w-full mx-auto px-4 flex justify-between items-center pointer-events-none gap-6 my-2">
-        <div class="w-44 h-24 md:h-28 rounded-2xl overflow-hidden border border-slate-200 shadow-md rotate-[2deg] bg-white p-1">
-            <img src="Images/traffic-image3.jpg" alt="Traffic State 3" class="w-full h-full object-cover rounded-xl">
-        </div>
-        <div class="w-44 h-24 md:h-28 rounded-2xl overflow-hidden border border-slate-200 shadow-md rotate-[-2deg] bg-white p-1">
-            <img src="Images/traffic-image4.jpg" alt="Traffic State 4" class="w-full h-full object-cover rounded-xl">
-        </div>
-    </div>
-
-    <section id="facts-section" class="relative z-30 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 scroll-mt-28">
+    <section id="facts-section" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 z-30">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-start gap-4 text-slate-800">
-                <div class="w-10 h-10 rounded-xl bg-amber-5 flex items-center justify-center shrink-0 border border-amber-200">
-                    <i class="fas fa-hourglass-half text-amber-600 text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wide font-mono text-slate-500 mb-1">Time Sinks</h3>
-                    <p class="text-slate-600 text-xs font-medium leading-relaxed">
-                        Average metropolitan commuters clear upwards of 240 hours yearly structural waste static within bottleneck queues.
-                    </p>
-                </div>
+            <div class="bg-white border border-slate-200 p-5 rounded-2xl flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-200 text-amber-600 shrink-0"><i class="fas fa-hourglass-half"></i></div>
+                <div><h4 class="text-xs font-bold font-mono text-slate-400 uppercase">Commuter Delays</h4><p class="text-slate-600 text-xs mt-1">Average city drivers drain 240+ structural hours annually sitting inside bottleneck queues.</p></div>
             </div>
-
-            <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-start gap-4 text-slate-800">
-                <div class="w-10 h-10 rounded-xl bg-rose-5 flex items-center justify-center shrink-0 border border-rose-200">
-                    <i class="fas fa-gas-pump text-rose-600 text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wide font-mono text-slate-500 mb-1">Economic Waste</h3>
-                    <p class="text-slate-600 text-xs font-medium leading-relaxed">
-                        Idle engine cycles across arterial ring roads drain fuel metrics costing millions in capital overhead weekly.
-                    </p>
-                </div>
+            <div class="bg-white border border-slate-200 p-5 rounded-2xl flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center border border-rose-200 text-rose-600 shrink-0"><i class="fas fa-gas-pump"></i></div>
+                <div><h4 class="text-xs font-bold font-mono text-slate-400 uppercase">Economic Cost</h4><p class="text-slate-600 text-xs mt-1">Idle configurations across arterial hubs exhaust fuel units valued at millions in overhead weekly.</p></div>
             </div>
-
-            <div class="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm flex items-start gap-4 text-slate-800">
-                <div class="w-10 h-10 rounded-xl bg-indigo-5 flex items-center justify-center shrink-0 border border-indigo-200">
-                    <i class="fas fa-smog text-indigo-600 text-lg"></i>
-                </div>
-                <div>
-                    <h3 class="text-sm font-bold uppercase tracking-wide font-mono text-slate-500 mb-1">Environmental Impact</h3>
-                    <p class="text-slate-600 text-xs font-medium leading-relaxed">
-                        Crawling vehicle flow concentrations compress ambient air quality indices heavily within residential buffer belts.
-                    </p>
-                </div>
+            <div class="bg-white border border-slate-200 p-5 rounded-2xl flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center border border-indigo-200 text-indigo-600 shrink-0"><i class="fas fa-smog"></i></div>
+                <div><h4 class="text-xs font-bold font-mono text-slate-400 uppercase">Carbon Loading</h4><p class="text-slate-600 text-xs mt-1">Crawling traffic grids aggregate microparticle emissions directly into local urban residential buffer zones.</p></div>
             </div>
         </div>
     </section>
 
-    <section id="about-section" class="relative z-30 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-12 scroll-mt-28">
-        <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm grid grid-cols-1 lg:grid-cols-3 gap-8 text-slate-800">
-            <div class="lg:col-span-2 space-y-4">
-                <div class="border-b border-slate-200 pb-3">
-                    <h2 class="text-xl font-bold text-slate-900 tracking-tight font-display">Decentralized Structural Routing Correction</h2>
-                    <p class="text-emerald-600 text-xs font-bold uppercase tracking-wider mt-0.5">Ecosystem Operating Parameters</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-slate-600 leading-relaxed">
-                    <div class="space-y-1.5">
-                        <h4 class="font-bold text-slate-900 flex items-center gap-2 font-display"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Predictive Divergence Vectors</h4>
-                        <p>Pre-emptive localized notifications allow transport entities to distribute load metrics away from over-saturated corridors early.</p>
-                    </div>
-                    <div class="space-y-1.5">
-                        <h4 class="font-bold text-slate-900 flex items-center gap-2 font-display"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Edge Peer Validation</h4>
-                        <p>Eliminate dependency on slow central registries. Real-time logging enables drivers to broadcast live roadway profiles immediately.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-50 text-slate-700 p-6 rounded-xl flex flex-col justify-between border border-slate-200 shadow-inner">
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Deployment Guidelines</h4>
-                    <ul class="space-y-2 text-xs font-medium">
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-600 mt-0.5"></i> Evaluate real-time system maps for reported congestion nodes.</li>
-                        <li class="flex items-start gap-2"><i class="fas fa-check text-emerald-600 mt-0.5"></i> Stream verified localized incidents via browser location modules.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="relative z-30 bg-white border-t border-slate-200 mt-auto py-6 text-slate-400 text-xs font-medium">
+    <footer class="bg-white border-t border-slate-200 py-6 mt-auto text-slate-400 text-xs z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>clearwayBlr Integrated Portfolio Workspace Engine</span>
-            <span>Spatial Web Telemetry Demonstration Framework</span>
+            <span>clearwayBlr Workspace Architecture Framework</span>
+            <span>Spatial Web Demonstration Application • 2026</span>
         </div>
     </footer>
 
     <script>
-        let map;
-        let userMarker;
-        const defaultLat = 12.9716; 
-        const defaultLng = 77.5946; 
+        let map, userMarker;
+        const fallbackLat = 12.9716, fallbackLng = 77.5946;
 
-        function initMap() {
-            map = L.map('live-map', {
-                zoomControl: true,
-                attributionControl: true
-            }).setView([defaultLat, defaultLng], 12);
-            
+        function initApplication() {
+            // Setup Map Base Frame
+            map = L.map('live-map').setView([fallbackLat, fallbackLng], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
-            L.marker([12.9345, 77.6101]).addTo(map).bindPopup("<b>Koramangala 80ft Rd:</b> Construction Gridlock Alert.");
-            L.marker([12.9784, 77.6408]).addTo(map).bindPopup("<b>Indiranagar 100ft Rd:</b> Dense Traffic Slowdown.");
+            // Add default telemetry seed points
+            L.marker([12.9345, 77.6101]).addTo(map).bindPopup("<b>Koramangala 80ft Rd:</b> Structural Bottleneck Alert.");
+            L.marker([12.9784, 77.6408]).addTo(map).bindPopup("<b>Indiranagar 100ft Rd:</b> Construction Gridlock Network Lag.");
+
+            // Extract real-time user-reported metrics from Mock local persistence engine layer
+            loadSharedIncidents();
+
+            // Setup profile data bindings and load animation frames
+            displayProfile();
+            initCanvasRadar();
+            
+            // Forces Leaflet layout recalculation right after container drawing
+            setTimeout(() => { map.invalidateSize(); }, 200);
         }
 
-        // Modified: Logs now show bright royal blue text directly inside the ultra-dark box
-        function updateSubtitleBoxDirectly(message) {
-            const subtitleBox = document.getElementById('subtitle-stream-box');
-            if (subtitleBox) {
-                subtitleBox.innerHTML = `<span class="text-blue-300 font-mono font-bold bg-blue-950/60 border border-blue-900 px-2 py-1 rounded shadow-xs inline-block">${message}</span>`;
-            }
+        function loadSharedIncidents() {
+            const currentIncidents = JSON.parse(localStorage.getItem('blr_incidents')) || [];
+            currentIncidents.forEach(item => {
+                const markerColor = item.type === 'gridlock' ? '#e11d48' : '#ea580c';
+                L.circleMarker([item.lat, item.lng], {
+                    radius: 8, fillColor: markerColor, color: '#ffffff', weight: 1.5, fillOpacity: 0.9
+                }).addTo(map).bindPopup(`<b>Community Report:</b> ${item.name}<br><i>Status: ${item.type.toUpperCase()} Logged</i>`);
+            });
         }
 
         function getUserLocation() {
             const out = document.getElementById('geo-output');
             out.classList.remove('hidden');
-            
             if (navigator.geolocation) {
-                const searchMsg = "[SYSTEM LOG]: Traversing edge hardware spatial bounds...";
-                out.innerHTML = `
-                    <div class="flex items-center gap-2 text-amber-600 font-semibold font-mono text-[11px]">
-                        <i class="fas fa-satellite animate-spin"></i> ${searchMsg}
-                    </div>`;
-                updateSubtitleBoxDirectly(searchMsg);
+                out.innerHTML = `<span class="text-amber-600 font-bold"><i class="fas fa-satellite animate-spin mr-1"></i> Trailing edge hardware nodes...</span>`;
                 
                 navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
+                    (pos) => {
+                        const { latitude: lat, longitude: lng } = pos.coords;
+                        out.innerHTML = `<p class="text-emerald-600 font-bold"><i class="fas fa-lock mr-1"></i> Hardware Bound Set</p>
+                                         <p class="text-slate-500 mt-0.5">Lat: ${lat.toFixed(5)} • Lng: ${lng.toFixed(5)}</p>
+                                         <p id="geo-lookup-addr" class="text-indigo-600 text-[11px] mt-1"><i class="fas fa-spinner animate-spin"></i> Resolving vector indices...</p>`;
                         
-                        const lockMsg = `[SYSTEM LOG]: Hardware feed locked at Node Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-                        out.innerHTML = `
-                            <div class='space-y-1 text-slate-700 font-mono text-[11px] leading-normal'>
-                                <p class='text-emerald-600 font-bold flex items-center gap-1.5'><i class='fas fa-shadow-halved'></i> Hardware Feed Locked</p>
-                                <p><span class='text-slate-400'>LAT:</span> ${lat.toFixed(6)}° | <span class='text-slate-400'>LNG:</span> ${lng.toFixed(6)}°</p>
-                                <p id='address-field' class='text-indigo-600 text-[10px] mt-1 flex items-center gap-1'><i class='fas fa-spinner animate-spin'></i> Geocoding reverse lookup metrics...</p>
-                            </div>`;
-                        updateSubtitleBoxDirectly(lockMsg);
-                        
-                        if(map) {
-                            map.setView([lat, lng], 15);
-                            if(userMarker) map.removeLayer(userMarker);
-                            
-                            userMarker = L.circleMarker([lat, lng], {
-                                radius: 9,
-                                fillColor: '#10b981',
-                                color: '#ffffff',
-                                weight: 2.5,
-                                opacity: 1,
-                                fillOpacity: 0.9
-                            }).addTo(map).bindPopup("<b>Verified Active Vehicle Telemetry Node</b>").openPopup();
-                        }
+                        map.setView([lat, lng], 14);
+                        if (userMarker) map.removeLayer(userMarker);
+                        userMarker = L.circleMarker([lat, lng], { radius: 9, fillColor: '#10b981', color: '#ffffff', weight: 2, fillOpacity: 0.9 }).addTo(map).bindPopup("Current Commuter Tracking Origin").openPopup();
 
+                        // Core Reverse Lookup Execution Frame
                         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                            .then(response => response.json())
+                            .then(res => res.json())
                             .then(data => {
-                                const addressElement = document.getElementById('address-field');
-                                if (data && data.display_name) {
-                                    let cleanAddress = data.display_name;
-                                    if (cleanAddress.endsWith(', India')) {
-                                        cleanAddress = cleanAddress.substring(0, cleanAddress.lastIndexOf(', India'));
-                                    }
-                                    
-                                    addressElement.innerHTML = `<i class="fas fa-location-dot text-rose-500"></i> <span class="text-slate-800 font-sans font-medium">${cleanAddress}</span>`;
-                                    
-                                    const explicitName = localStorage.getItem("name") || "Guest Commuter";
-                                    const explicitVoiceSentence = `Hardware Feed Locked. Location matches ${cleanAddress}. Welcome ${explicitName}. Please report a bottleneck or plan a journey and enjoy a seamless experience in Clearway Bengaluru app.`;
-                                    
-                                    speakSystemAlert(explicitVoiceSentence);
-                                }
-                            })
-                            .catch(() => {
-                                const fallbackMsg = "[SYSTEM LOG]: Spatial matrix geocoding lookup completed.";
-                                document.getElementById('address-field').innerHTML = "Spatial matrix mapping completed.";
-                                updateSubtitleBoxDirectly(fallbackMsg);
+                                const addr = data.display_name.split(', India')[0];
+                                document.getElementById('geo-lookup-addr').innerHTML = `<i class="fas fa-location-dot text-rose-500"></i> ${addr}`;
+                                triggerVoiceBroadcast(`Hardware matrix bound verified at ${addr}. Clearway core systems operational.`);
+                            }).catch(() => {
+                                triggerVoiceBroadcast("Hardware matrix lock finalized. Reverse indices offline.");
                             });
                     },
                     () => {
-                        const errImg = "[SYSTEM LOG]: Geolocation permission requested but denied by user.";
-                        out.innerHTML = "<span class='text-rose-500 font-mono text-[11px] font-bold'><i class='fas fa-circle-exclamation'></i> Access Denied. Check Hardware Permissions.</span>";
-                        updateSubtitleBoxDirectly(errImg);
+                        out.innerHTML = `<span class="text-rose-500 font-bold"><i class="fas fa-triangle-exclamation mr-1"></i> Telemetry Permission Blocked by Client.</span>`;
                     }
                 );
             }
         }
 
-        function saveUserExperience() {
-            const nameInput = document.getElementById('username-input').value;
-            if (nameInput.trim() !== "") {
-                localStorage.setItem("name", nameInput);
-                displayPersonalizedExperience();
+        function triggerVoiceBroadcast(msg) {
+            const box = document.getElementById('subtitle-stream-box');
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utter = new SpeechSynthesisUtterance(msg);
+                utter.rate = 0.95;
                 
-                const welcomeSentence = `Identity configured successfully. Welcome ${nameInput}.`;
-                speakSystemAlert(welcomeSentence);
-            }
-        }
-
-        function clearUserExperience() {
-            localStorage.removeItem("name");
-            document.getElementById('username-input').value = "";
-            displayPersonalizedExperience();
-            speakSystemAlert("User preferences wiped.");
-        }
-
-        function displayPersonalizedExperience() {
-            const savedUser = localStorage.getItem("name");
-            const profileTag = document.getElementById('profile-identity-tag');
-            
-            if (savedUser) {
-                profileTag.innerHTML = `<span class="text-emerald-600 font-bold">${savedUser}</span>`;
-                document.getElementById('username-input').value = savedUser;
+                utter.onboundary = function(e) {
+                    if (e.name === 'word') {
+                        const word = msg.substring(e.charIndex).split(" ")[0];
+                        box.innerHTML = `<span class="text-slate-500">${msg.substring(0, e.charIndex)}</span><span class="text-blue-300 font-bold bg-blue-950 border border-blue-800 px-1 rounded mx-0.5">${word}</span><span class="text-slate-600 font-light">${msg.substring(e.charIndex + word.length)}</span>`;
+                    }
+                };
+                window.speechSynthesis.speak(utter);
             } else {
-                profileTag.innerHTML = `<span class="text-slate-400 font-medium italic">Anonymous Commuter</span>`;
+                box.innerHTML = `<span class="text-slate-400">${msg}</span>`;
             }
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('username-input').value.trim();
+            if (name) { localStorage.setItem('blr_commuter_name', name); displayProfile(); }
+        }
+        function clearProfile() { localStorage.removeItem('blr_commuter_name'); displayProfile(); document.getElementById('username-input').value=''; }
+        function displayProfile() {
+            const stored = localStorage.getItem('blr_commuter_name');
+            document.getElementById('profile-identity-tag').innerHTML = stored ? `<span class="text-emerald-600 font-bold">${stored}</span>` : `<span class="text-slate-400 italic font-normal">Anonymous Commuter</span>`;
+            if (stored) document.getElementById('username-input').value = stored;
         }
 
         function initCanvasRadar() {
             const canvas = document.getElementById('radarCanvas');
             const ctx = canvas.getContext('2d');
             let angle = 0;
-
-            function drawSweep() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const cx = canvas.width / 2;
-                const cy = canvas.height / 2;
-                const r = canvas.width / 2 - 1;
-
-                ctx.strokeStyle = "rgba(16, 185, 129, 0.2)";
-                ctx.lineWidth = 1;
-                ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
-                ctx.beginPath(); ctx.arc(cx, cy, r/2, 0, Math.PI * 2); ctx.stroke();
-
-                ctx.save();
-                ctx.translate(cx, cy);
-                ctx.rotate(angle);
-                let gradient = ctx.createLinearGradient(0, 0, r, 0);
-                gradient.addColorStop(0, "rgba(16, 185, 129, 0)");
-                gradient.addColorStop(1, "#10b981");
-                ctx.strokeStyle = gradient;
-                ctx.lineWidth = 1.5;
-                ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(r, 0); ctx.stroke();
-                ctx.restore();
-
-                angle += 0.05; 
-                requestAnimationFrame(drawSweep);
+            function sweep() {
+                ctx.clearRect(0,0,24,24);
+                ctx.strokeStyle = "rgba(16, 185, 129, 0.15)";
+                ctx.beginPath(); ctx.arc(12,12,10,0,Math.PI*2); ctx.stroke();
+                ctx.save(); ctx.translate(12,12); ctx.rotate(angle);
+                let g = ctx.createLinearGradient(0,0,10,0);
+                g.addColorStop(0,"rgba(16, 185, 129, 0)"); g.addColorStop(1,"#10b981");
+                ctx.strokeStyle = g; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(10,0); ctx.stroke();
+                ctx.restore(); angle += 0.06; requestAnimationFrame(sweep);
             }
-            drawSweep();
+            sweep();
         }
 
-        function speakSystemAlert(textMessage) {
-            const subtitleBox = document.getElementById('subtitle-stream-box');
-            if (subtitleBox) {
-                subtitleBox.innerHTML = "";
-            }
-
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); 
-                
-                const speechObject = new SpeechSynthesisUtterance(textMessage);
-                speechObject.rate = 0.90;  
-                speechObject.pitch = 1.0;  
-
-                speechObject.onboundary = function(event) {
-                    if (event.name === 'word') {
-                        const remainingText = textMessage.substring(event.charIndex);
-                        const currentWord = remainingText.split(" ")[0];
-                        
-                        const spokenPart = textMessage.substring(0, event.charIndex);
-                        const untouchedPart = textMessage.substring(event.charIndex + currentWord.length);
-
-                        if (subtitleBox) {
-                            // High Contrast Dark-Mode Subtitle Sequence: Dark blue / black container backdrop with luminous blue dynamic markers
-                            subtitleBox.innerHTML = `
-                                <span class="text-slate-500 font-normal">${spokenPart}</span>
-                                <span class="text-blue-300 font-bold bg-blue-950/80 border border-blue-800 px-1.5 py-0.5 rounded shadow-sm inline-block mx-0.5">${currentWord}</span>
-                                <span class="text-slate-500 opacity-60 font-light">${untouchedPart}</span>
-                            `;
-                            subtitleBox.scrollTop = subtitleBox.scrollHeight;
-                        }
-                    }
-                };
-
-                speechObject.onend = function() {
-                    if (subtitleBox) {
-                        subtitleBox.innerHTML = `<span class="text-blue-300 font-semibold bg-blue-950/50 border border-blue-900 px-2 py-1 rounded inline-block">"${textMessage}"</span>`;
-                    }
-                };
-
-                speechObject.onerror = function() {
-                    if (subtitleBox) {
-                        subtitleBox.innerHTML = `<span class="text-slate-400 font-medium">"${textMessage}"</span>`;
-                    }
-                };
-
-                window.speechSynthesis.speak(speechObject);
-            } else {
-                if (subtitleBox) {
-                    subtitleBox.innerHTML = `<span class="text-slate-400 font-medium">"${textMessage}"</span>`;
-                }
-            }
-        }
-
-        window.onload = function() {
-            initMap();
-            displayPersonalizedExperience();
-            initCanvasRadar();
-        }
+        window.onload = initApplication;
     </script>
 </body>
 </html>
